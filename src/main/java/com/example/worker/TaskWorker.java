@@ -10,6 +10,8 @@ import org.apache.curator.x.discovery.ServiceDiscoveryBuilder;
 import org.apache.curator.x.discovery.ServiceInstance;
 import org.apache.curator.x.discovery.UriSpec;
 import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.GET;
@@ -29,11 +31,12 @@ import java.util.concurrent.atomic.AtomicReference;
 @Path("/")
 public class TaskWorker {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskWorker.class);
+
     private static final AtomicReference<Double> load = new AtomicReference<>(0.0);
-    private static UndertowJaxrsServer server;
+    private static final LoadMetric metric = new LoadMetric(load.get());
     private static String workerName;
     private static int workerPort;
-    private static LoadMetric metric = new LoadMetric(load.get());
     private static ServiceInstance<LoadMetric> serviceInstance;
 
     /**
@@ -52,7 +55,7 @@ public class TaskWorker {
         startRestServer();
         registerInZookeeper();
 
-        System.out.println("Worker : " + workerName + " , started on port : " + workerPort);
+        LOGGER.info("Worker : " + workerName + " , started on port : " + workerPort);
     }
 
     private static void registerInZookeeper() throws Exception {
@@ -92,15 +95,15 @@ public class TaskWorker {
         try {
             metric.setLoad(load.get());
             serviceDiscovery.updateService(serviceInstance);
-            System.out.println("Updated load to : " + load.get());
+            LOGGER.info("Updated load to : {} ", load.get());
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.error("Error updating load ", e);
         }
     }
 
     private static void startRestServer() {
         System.setProperty("org.jboss.resteasy.port", "" + workerPort);
-        server = new UndertowJaxrsServer().start();
+        UndertowJaxrsServer server = new UndertowJaxrsServer().start();
         server.deploy(WorkerApp.class);
     }
 
@@ -108,7 +111,7 @@ public class TaskWorker {
     @Path("/work")
     public String work() {
         String response = "Work done by : " + workerName + " , @ Load : " + load.get() + " , @ Time : " + LocalTime.now();
-        System.out.println(response);
+        LOGGER.info("Response : {}", response);
         return response;
     }
 

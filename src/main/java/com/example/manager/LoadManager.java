@@ -15,6 +15,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.jboss.resteasy.plugins.server.undertow.UndertowJaxrsServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.GET;
@@ -30,11 +32,10 @@ import java.util.Set;
 @Path("/")
 public class LoadManager {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(LoadManager.class);
+    private static final HttpClient httpClient = new DefaultHttpClient();
     private static ServiceProvider<LoadMetric> serviceProvider;
-    private static UndertowJaxrsServer server;
     private static int managerPort;
-    private static HttpClient httpClient = new DefaultHttpClient();
-
 
     /**
      * Manager Start
@@ -51,7 +52,7 @@ public class LoadManager {
 
         startDiscovery();
 
-        System.out.println("Manager started on port " + managerPort);
+        LOGGER.info("Manager started on port : {}", managerPort);
     }
 
     private static void startDiscovery() throws Exception {
@@ -80,7 +81,7 @@ public class LoadManager {
 
     private static void startRestServer() {
         System.setProperty("org.jboss.resteasy.port", "" + managerPort);
-        server = new UndertowJaxrsServer().start();
+        UndertowJaxrsServer server = new UndertowJaxrsServer().start();
         server.deploy(ManagerApp.class);
     }
 
@@ -88,11 +89,9 @@ public class LoadManager {
     @Path("/delegate")
     public String delegate() throws Exception {
         ServiceInstance<LoadMetric> instance = serviceProvider.getInstance();// get worker instance
-        LoadMetric metric = instance.getPayload();
-        System.out.println("Metric is : " + metric);
         String address = instance.buildUriSpec();
         String response = getResponse(address + "/work");
-        System.out.println("Response : " + response);
+        LOGGER.info("Response : {} ", response);
         return response;
     }
 
@@ -102,7 +101,7 @@ public class LoadManager {
             HttpResponse response = httpClient.execute(getRequest);
             return IOUtils.toString(response.getEntity().getContent());
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Error occurred while connecting to worker ", e);
             return "Error occurred : " + e.getMessage();
         }
     }
