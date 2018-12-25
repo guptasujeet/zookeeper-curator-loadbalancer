@@ -2,6 +2,7 @@ package com.example.worker;
 
 import com.example.common.LoadMetric;
 import com.google.common.collect.Sets;
+import javafx.concurrent.Task;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.RetryNTimes;
@@ -126,7 +127,7 @@ public class TaskWorker {
 
         @Override
         public Set<Class<?>> getClasses() {
-            return Sets.newHashSet(WorkerApp.class);
+            return Sets.newHashSet(TaskWorker.class);
         }
     }
 

@@ -22,3 +22,12 @@ Starting ZooKeeper
 -----------------
 The above assumes that ZooKeeper is running on localhost at port 2181
 
+
+Testing Load Balancer
+---------------------
+
+    for i in 1 2 3 4 5 6 7 8 9 10
+    do
+       curl 'http://localhost:18000/delegate'
+       echo ""
+    done
