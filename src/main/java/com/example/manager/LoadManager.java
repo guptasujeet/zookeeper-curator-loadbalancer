@@ -38,7 +38,7 @@ public class LoadManager {
 
     /**
      * Manager Start
-     * java Manager 18000
+     * java LoadManager 18000
      */
     public static void main(String[] args) throws Exception {
         if (args.length == 0) {
