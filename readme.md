@@ -15,6 +15,7 @@ Starting Worker
 
     java TaskWorker Worker_1 18005
     java TaskWorker Worker_2 18006
+    java TaskWorker Worker_3 18007
      
      
      

@@ -33,6 +33,8 @@ public class TaskWorker {
     private static UndertowJaxrsServer server;
     private static String workerName;
     private static int workerPort;
+    private static LoadMetric metric = new LoadMetric(load.get());
+    private static ServiceInstance<LoadMetric> serviceInstance;
 
     /**
      * Worker Start
@@ -59,12 +61,12 @@ public class TaskWorker {
         curatorFramework.start();
 
         //create service instance
-        ServiceInstance<LoadMetric> serviceInstance = ServiceInstance.<LoadMetric>builder()
+        serviceInstance = ServiceInstance.<LoadMetric>builder()
                 .uriSpec(new UriSpec("{scheme}://{address}:{port}"))
                 .address("localhost")
                 .port(workerPort)
                 .name("worker")
-                .payload(new LoadMetric(0.0))
+                .payload(metric) // mutable metric object, used to update data while updating service
                 .build();
 
         //register serviceInstance
@@ -88,15 +90,8 @@ public class TaskWorker {
     private static void updateLoadMetric(ServiceDiscovery<LoadMetric> serviceDiscovery) {
         load.set(Math.random());
         try {
-            ServiceInstance<LoadMetric> serviceInstance = ServiceInstance.<LoadMetric>builder()
-                    .uriSpec(new UriSpec("{scheme}://{address}:{port}"))
-                    .address("localhost")
-                    .port(workerPort)
-                    .name("worker")
-                    .payload(new LoadMetric(load.get()))
-                    .build();
-
-            serviceDiscovery.registerService(serviceInstance);
+            metric.setLoad(load.get());
+            serviceDiscovery.updateService(serviceInstance);
             System.out.println("Updated load to : " + load.get());
         } catch (Exception e) {
             e.printStackTrace();
@@ -129,6 +124,5 @@ public class TaskWorker {
             return Sets.newHashSet(TaskWorker.class);
         }
     }
-
 
 }

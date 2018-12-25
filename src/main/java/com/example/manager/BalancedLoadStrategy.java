@@ -23,6 +23,9 @@ public class BalancedLoadStrategy implements ProviderStrategy<LoadMetric> {
         if (instances.size() == 0) {
             return null;
         }
+        if (instances.size() == 1) {
+            return instances.get(0);
+        }
         TreeMap<Double, List<ServiceInstance<LoadMetric>>> sortedInstances = toSortedInstances(instances);
         List<ServiceInstance<LoadMetric>> lightLoadInstances = sortedInstances.get(sortedInstances.firstKey());
         if (lightLoadInstances.size() == 1) {
