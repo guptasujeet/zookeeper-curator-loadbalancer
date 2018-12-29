@@ -30,7 +30,11 @@ Starting ZooKeeper
 -----------------
 The above assumes that ZooKeeper is running on localhost at port 2181.
 
-You can also run ZooKeeper using the runConfigurations provided.
+  - You can also run ZooKeeper using the runConfigurations provided 
+  - Or Maven ZooKeeper plugin Start / Stop 
+  
+        mvn net.revelc.code:zookeeper-maven-plugin:start
+        mvn net.revelc.code:zookeeper-maven-plugin:stop
 
 Testing Load Balancer
 ---------------------
@@ -43,7 +47,7 @@ Testing Load Balancer
     
     
     
-Reference Groovy Example
+Inspired From 
 -------------------------
 http://tomaszdziurko.com/2014/07/zookeeper-curator-and-microservices-load-balancing/
  

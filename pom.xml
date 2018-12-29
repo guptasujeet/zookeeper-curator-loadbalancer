@@ -117,7 +117,42 @@
                     <artifactId>maven-project-info-reports-plugin</artifactId>
                     <version>3.0.0</version>
                 </plugin>
+                <plugin>
+                    <groupId>net.revelc.code</groupId>
+                    <artifactId>zookeeper-maven-plugin</artifactId>
+                    <version>1.1.0</version>
+                </plugin>
             </plugins>
         </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>net.revelc.code</groupId>
+                <artifactId>zookeeper-maven-plugin</artifactId>
+                <configuration>
+                    <!-- This is a unique string to kill the service when finished -->
+                    <shutdownString>MyZooKeeperUniqueShutDownString</shutdownString>
+                    <!-- This is the port the plugin listens on for the shutdownString -->
+                    <shutdownPort>2182</shutdownPort>
+                    <!-- Configure the ZooKeeper port; defaults to listening on 127.0.0.1 -->
+                    <clientPort>2181</clientPort>
+
+                    <!--Both configurations must be present if you wish to keep data between builds-->
+                    <!--<zmpDir>/tmp/zookeeper/zmp</zmpDir>
+                    <keepPreviousState>true</keepPreviousState>-->
+                </configuration>
+                <executions>
+                    <execution>
+                        <!-- In this example, only one ZooKeeper service is started and the
+                        two goals share the same configuration, so the stop goal sends the
+                        same shutdown message that the start goal is listening for -->
+                        <id>run-zookeeper</id>
+                        <goals>
+                            <goal>start</goal><!-- runs at pre-integration-test phase -->
+                            <goal>stop</goal><!-- runs at post-integration-test phase -->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
 </project>
