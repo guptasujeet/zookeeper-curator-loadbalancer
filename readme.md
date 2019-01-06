@@ -13,16 +13,16 @@ This tutorial demonstrates following features
 Starting Worker
 ---------------
 
-    java TaskWorker Worker_1 18005
-    java TaskWorker Worker_2 18006
-    java TaskWorker Worker_3 18007
+    mvn exec:java@worker_1
+    mvn exec:java@worker_2
+    mvn exec:java@worker_3
      
      
      
 Starting Manager
 ----------------
 
-    java LoadManager 18000
+    mvn exec:java@manager
     
     
 

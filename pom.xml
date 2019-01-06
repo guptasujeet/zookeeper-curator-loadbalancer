@@ -124,7 +124,94 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <id>manager</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>com.example.manager.LoadManager</mainClass>
+                            <arguments>
+                                <argument>18000</argument>
+                            </arguments>
+                            <systemProperties>
+                                <!--for log4j-->
+                                <systemProperty>
+                                    <key>service.name</key>
+                                    <value>manager</value>
+                                </systemProperty>
+                            </systemProperties>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>worker_1</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>com.example.worker.TaskWorker</mainClass>
+                            <arguments>
+                                <argument>worker_1</argument>
+                                <argument>18005</argument>
+                            </arguments>
+                            <systemProperties>
+                                <!--for log4j-->
+                                <systemProperty>
+                                    <key>service.name</key>
+                                    <value>worker_1</value>
+                                </systemProperty>
+                            </systemProperties>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>worker_2</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>com.example.worker.TaskWorker</mainClass>
+                            <arguments>
+                                <argument>worker_2</argument>
+                                <argument>18006</argument>
+                            </arguments>
+                            <systemProperties>
+                                <!--for log4j-->
+                                <systemProperty>
+                                    <key>service.name</key>
+                                    <value>worker_2</value>
+                                </systemProperty>
+                            </systemProperties>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>worker_3</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>com.example.worker.TaskWorker</mainClass>
+                            <arguments>
+                                <argument>worker_3</argument>
+                                <argument>18007</argument>
+                            </arguments>
+                            <systemProperties>
+                                <!--for log4j-->
+                                <systemProperty>
+                                    <key>service.name</key>
+                                    <value>worker_3</value>
+                                </systemProperty>
+                            </systemProperties>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>net.revelc.code</groupId>
                 <artifactId>zookeeper-maven-plugin</artifactId>
